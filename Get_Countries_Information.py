@@ -16,7 +16,6 @@ def get_Redshift_connection(autocommit=True):
     conn.autocommit = autocommit
     return conn.cursor()
 
-
 @task
 def get_contry_info(url):
     logging.info(datetime.utcnow())
@@ -25,6 +24,7 @@ def get_contry_info(url):
 
 @task
 def transform(text):
+    logging.info("transform started")
     dict_list= json.loads(text)
     records = []
     for dict in dict_list:
@@ -33,10 +33,8 @@ def transform(text):
         population = dict["population"]
         area = dict["area"]
         records.append([name, official_name, population, area])
-        logging.info([name, official_name, population, area])
     logging.info("transform done")
     return records
-
 
 @task
 def load(schema, table, records):
